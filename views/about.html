@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width">
+    <title>Standard Page</title> 
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="aboutPageStyles.css" />
+  </head>
+  <body>
+    <a id="backButton" href="index">BACK</a>
+    <div class"infoDiv">
+      <h1> ABOUT </h1>
+      <p>The pertinent project attempts to visualize the flow of migrants and asylum-seekers through my home country Slovenia. The visualization was built using <a href="http://d3js.org/">D3.js</a>.
+      </p>
+    </div>
+
+      <h2>THE MAP</h2>
+      <p>The map of Slovenia was generated from a JSON file that contains coordinates of <a href="https://www.mediafire.com/?5faef9y5ct8mn">all the European countries</a>. <a href="http://chimera.labs.oreilly.com/books/1230000000345/ch12.html#_json_meet_geojson">Chapter 12</a> of Scott Murray’s book Interactive Data Visualization for The Web greatly facilitated my job of creating a map from a JSON file.
+      </p>
+
+      <h2>THE DATA</h2>
+      <p><a href="http://www.policija.si/eng/index.php/component/content/article/13-news/1729-a-new-webpage-on-police-activities-re-current-migration-flows-set-up-available-informations">Slovenian police</a> monitor and release information about the influx of migrants on a daily basis. The data is usually released 3 times per day - at 6am, 12am and 6pm - and contains information regarding the number of people that enter and leave the country as well as information on the occupancy of immigration centers across the country. The data is released in the form of MS Word documents, which D3 does not support. I thus had to copy individual values from each word document to first create a spreadsheet and then a .csv file that I used in d3. The spreadsheet contains data on the occupancy of immigration centers for every day from October 20, 2015 (which is when the police started collecting the data) to November 5, 2015(which is when I presented the project in class). The number of people in different immigration centers is represented by differently sized circles. The radius of each circle corresponds to the number of people in a particular center.
+      </p>
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  </body>
+</html>
