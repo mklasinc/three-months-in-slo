@@ -23,6 +23,7 @@ ROUTES
 
 //Main Page Route - NO data
 app.get("/", function(req, res){
+	console.log(req.url);
 	res.render('index'); //, dataForThePage
 });
 

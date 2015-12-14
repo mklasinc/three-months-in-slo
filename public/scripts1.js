@@ -4,6 +4,7 @@ var routeTrans;
 var totalLength; // used in line transitions
 var reverseTotalLength; // used in line transitions
 var vrhnikaData;
+var transitionRoutes = false;
 
 /*------------------used in SLIDER JS------------------*/
 var dateArray = ["21 Oct 06:00 GMT+1", "21 Oct 11:00 GMT+1", 
@@ -124,11 +125,8 @@ function sloMap(){
         	return "black";
         	}
     	})
+		linesJSON();
 	});
-
-	linesJSON();
-	//valuesJSON();
-	//newLineJSON();
 	
 };
 
@@ -168,18 +166,17 @@ function linesJSON(){
     routeTrans
     .attr("stroke-dasharray", totalLength + " " + totalLength)
     .attr("stroke-dashoffset", totalLength)
-    /*.transition()
-    .duration(2000)
-    .ease("linear")
-    .attr("stroke-dashoffset", totalLength);*/
+
+    transitionRoutes = true;
+    valuesJSON();
 	});
-	valuesJSON();
 };
 
 /*-----------------------LINE TRANSITION----------------------------------*/
 function updateTransition(centerName){
 	console.log("yes,I've been called");
 	//go through it once again to make sure you understand i;
+	if(transitionRoutes){
 	routeTrans
 	.attr("stroke-dasharray", totalLength + " " + totalLength)
 	.attr("stroke-dashoffset", totalLength);
@@ -194,32 +191,14 @@ function updateTransition(centerName){
 	.duration(800)
 	.ease("linerar")
 	.attr("stroke-dashoffset",reverseTotalLength)
+	};
 };
-
-/*-------------------------KOPER-MARIBOR LINE - GROUP 3---------------------------*/
-/*function newLineJSON(){
-	d3.json("trial.json", function(error, json){
-	if (error) return console.error(error);
-
-	console.log(json);
-
-    group3.selectAll("path")
-    .data(json.features)
-    .enter()
-    .append("path")
-    .attr("d", path)
-    .attr("stroke","red")
-    .attr("stroke-width","6px")
-    .style("fill","none")
-	});
-};*/
-
 
 /*------------------------------REFUGEES DATA---------------------------*/
 /*-----------------------------called in sloMap()-----------------------*/
 function valuesJSON(){
 d3.json("updatedValuesGeocode.json", function(data) {
-	console.log(data);
+	console.log("we'll start plotting the circles");
 
 //check the numRefugees array length - numRefArrayLength is a global variable
 	numRefArrayLength = d3.keys(data[0].numRefugees).length;
@@ -289,7 +268,9 @@ d3.json("updatedValuesGeocode.json", function(data) {
 //hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
 		})
+	console.log("we'll done with plotting circles");
 	});
+	console.log("this is the end of the valuesJSON function");
 };
 
 /*---------------------------------SIZE CHANGE FUNCTION--------------------------*/
@@ -370,22 +351,6 @@ function updateData(){
  }
 
 updateData();
-
-/*
-function showCSV(){
-	d3.csv("newdatafile.csv", function(data){
-		console.log(data);
-		var coords = [];
-		for (var i = 0; i < data.length; i++){
-			var latNum = Number(data[i].latitude);
-			var lonNum = Number(data[i].longitude);
-			var tempArray = [latNum, lonNum];
-			coords.push(tempArray);
-		}
-		console.log(coords);
-
-	});
-};*/
 
 /*-------------------AUTOPLAY-------------------*/
 /*----------------------------------------------*/
