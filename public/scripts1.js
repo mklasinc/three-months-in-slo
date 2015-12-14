@@ -85,9 +85,9 @@ var group4 = svg.append("g");
 
 //PROJECTION
 var projection = d3.geo.mercator()
-	.scale(svgWidth*11)
+	.scale(svgWidth*10)
 	.translate([svgWidth/2, svgHeight/2])
-	.center([14.45, 46.1]);
+	.center([14.50, 46.1]);
 //PATH
 var path = d3.geo.path()
 	.projection(projection);
