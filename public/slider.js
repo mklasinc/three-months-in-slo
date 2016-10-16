@@ -23,7 +23,7 @@ $("#slider").slider({
     $("#dateDisplay").html(dateArray[valueSlider]);
                	
     // update radius range
-    d3.json("updatedValuesGeocode.json", function(error, data) {
+    d3.json("data/updatedValuesGeocode.json", function(error, data) {
       rScale.domain([
 		    d3.min(data, function(d){ return d.numRefugees[valueSlider]}),
 				d3.max(data, function(d){ return d.numRefugees[valueSlider]})
@@ -31,7 +31,7 @@ $("#slider").slider({
 
     var vrhnikaDataSlider = data[0].numRefugees[valueSlider];
     console.log(vrhnikaDataSlider);
-    if(vrhnikaDataSlider!==0){
+    /*if(vrhnikaDataSlider!==0){
       route
       .attr("stroke-dashoffset", totalLength);
 
@@ -45,7 +45,7 @@ $("#slider").slider({
       .duration(500)
       .ease("linerar")
       .attr("stroke-dashoffset",reverseTotalLength)
-    };
+    };*/
     // change circle radii
       svg.selectAll("circle")
         .data(data)

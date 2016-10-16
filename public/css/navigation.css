@@ -1,0 +1,62 @@
+.main-navigation {
+    clear: both;
+    display: block;
+    font-family: sans-serif;
+    font-size: 1em;
+}
+
+.main-navigation ul {
+    display: none;
+    list-style: none;
+    margin-left: 0;
+}
+
+.main-navigation li {
+    position: relative;
+}
+
+.main-navigation ul ul {
+    display: none;
+    margin-left: 0.8em;
+}
+
+.main-navigation a {
+    position: relative;
+    display: block;
+    padding: 0.8em 1em;
+    text-decoration: none;
+    line-height: 1.6em;
+    color: white;
+}
+
+.main-navigation a:hover,
+.main-navigation a:focus {
+    background: #fff;
+    color: #000;
+}
+
+.main-navigation a,
+.main-navigation ul ul li:lastchild a {
+    border-bottom: 1px solid white;
+}
+
+.main-navigation ul li:last-child a {
+    border-bottom: none;
+}
+
+.main-navigation ul .toggled-on {
+    display: block;
+}
+
+.main-navigation li {
+    position: relative;
+}
+
+.main-navigation .current-menu-item > a{
+    font-weight: 700;
+}
+
+.main-navigation .nav-menu > ul > li:first-child,
+.main-navigation .nav-menu > li:first-child {
+    border-top: 0;
+}

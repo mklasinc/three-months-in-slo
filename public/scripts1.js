@@ -1,3 +1,7 @@
+var centerX =14.70,
+	centerY = 46.1;
+
+
 /*-------------------GLOBAL VARIABLES--------------------------------------*/
 var route; // used in line transitions
 var routeTrans;
@@ -40,6 +44,9 @@ var numRefCount = 0;
 //used in AUTOPLAY
 var updateCount = 0;
 
+//USED IN PATH TRANSITIONS
+var pathCounter = 0;
+
 /*-------------------WINDOW + RESIZE---------------------------------------*/
 //check window width
 var w = window,
@@ -56,38 +63,34 @@ var updateHeightNew;
     //svgHeight = svgWidth/1.85;
 
     if(x < y){
-	svgWidth = x* 0.96;
+	svgWidth = x* 0.98;
 	svgHeight = svgWidth/2;
 	}else if(y < x){
 	svgHeight = y * 0.92;
-	svgWidth = svgHeight*2;
+	svgWidth = svgHeight*2.2;
 	};
 
 d3.select(window)
     .on("resize", sizeChange);
-
 
 /*------------------------SVG OBJECT--------------------------------------*/
 var svg = d3.select("#container").append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
 
-
 // SPLIT PATH INTO GROUPS
 //GROUP1 - the map of SLOVENIA
 var group1 = svg.append("g");
-//GROUP 2 - the 
+//GROUP 2 - grey route
 var group2 = svg.append("g");
-//GROUP 3 - 
-var group3 = svg.append("g");
-
+//GROUP 4 - red route
 var group4 = svg.append("g");
 
 //PROJECTION
 var projection = d3.geo.mercator()
 	.scale(svgWidth*10)
 	.translate([svgWidth/2, svgHeight/2])
-	.center([14.70, 46.1]);
+	.center([centerX, centerY]);
 //PATH
 var path = d3.geo.path()
 	.projection(projection);
@@ -99,7 +102,7 @@ var rScale = d3.scale.linear()
 /*-----------------------called in document.ready---------------------------*/
 
 function sloMap(){
-	d3.json("trimmedDownEuropeGeo.json", function(error, json) {
+	d3.json("data/trimmedDownEuropeGeo.json", function(error, json) {
 	if (error) return console.error(error);
 
 	group1.selectAll("path")
@@ -133,13 +136,15 @@ function sloMap(){
 /*------------------------HIGHWAY - GROUP 2 -----------------------------------*/
 /*-------------------------called in sloMap()----------------------------------*/
 function linesJSON(){
-	d3.json("MultipleCities.json", function(error, json){
+	d3.json("data/MultipleCities1.json", function(error, json){
 	if (error) return console.error(error);
 
 	//var grey = d3.rgb(255,100,100);
 	console.log(json);
 
 	//route is a global variable
+	//these are grey lines
+	//not all the lines are showing - so the problem is here
     route = group2.selectAll("path")
     .data(json.features)
     .enter()
@@ -148,24 +153,28 @@ function linesJSON(){
     .attr("stroke","grey")
     .attr("stroke-width","0.5px")
     .style("fill","none");
+    //both totalLength and reverseTotalLength are local variables
 
-    routeTrans =
-    group4.selectAll("path")
+    //these are the red lines
+    //they should all have the same default configuration
+    //stroke-dasharray - crucial for the transition
+    routeTrans = group4.selectAll("path")
     .data(json.features)
     .enter()
     .append("path")
     .attr("d", path)
-    .attr("stroke","red")
-    .attr("stroke-width","3px")
-    .style("fill","none");
-    //both totalLength and reverseTotalLength are local variables
+    .style("fill","none")
+    .attr("stroke","red");
+    /*
     totalLength = route.node().getTotalLength();
-    reverseTotalLength = -totalLength;
+    reverseTotalLength = -totalLength;*/
 
-    //stroke-dasharray - crucial for the transition
+    
     routeTrans
-    .attr("stroke-dasharray", totalLength + " " + totalLength)
-    .attr("stroke-dashoffset", totalLength)
+	.each(function(d) { d.totalLength = this.getTotalLength(); })
+    .attr("stroke-dasharray", function(d) { return d.totalLength + " " + d.totalLength; })
+    .attr("stroke-dashoffset", function(d) { return d.totalLength + pathCounter*d.totalLength; });
+
 
     transitionRoutes = true;
     valuesJSON();
@@ -181,15 +190,16 @@ function updateTransition(centerName){
 	.attr("stroke-dasharray", totalLength + " " + totalLength)
 	.attr("stroke-dashoffset", totalLength);
 
+
 	routeTrans
 	.transition()
 	.duration(800)
 	.ease("linear")
 	.attr("stroke-dashoffset", 0)
 	.transition()
-	.delay(300)
-	.duration(800)
-	.ease("linerar")
+	.delay(800)
+	.duration(400)
+	.ease("linear")
 	.attr("stroke-dashoffset",reverseTotalLength)
 	};
 };
@@ -197,7 +207,7 @@ function updateTransition(centerName){
 /*------------------------------REFUGEES DATA---------------------------*/
 /*-----------------------------called in sloMap()-----------------------*/
 function valuesJSON(){
-d3.json("updatedValuesGeocode.json", function(data) {
+d3.json("data/updatedValuesGeocode.json", function(data) {
 	console.log("we'll start plotting the circles");
 
 //check the numRefugees array length - numRefArrayLength is a global variable
@@ -211,9 +221,11 @@ d3.json("updatedValuesGeocode.json", function(data) {
 	]);
 
 //plot the circles
-	group1.selectAll("circle")
+	var circles = group1.selectAll("circle")
 	.data(data)
-	.enter()
+	.enter();
+
+	circles
 	.append("circle")
 	.attr("cx", function(d) {
 		return projection([d.longitude, d.latitude])[0];
@@ -267,7 +279,31 @@ d3.json("updatedValuesGeocode.json", function(data) {
 		.classed("pointerActive", false);
 //hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
-		})
+		});
+
+		circles
+		.append("text")
+		.attr("dx", svgWidth/2 - 100)
+		.attr("dy", svgHeight/6)
+		.attr("font-size","4vh")
+		.attr("fill","red")
+		.text("AUSTRIA");
+
+		circles
+		.append("text")
+		.attr("dx", svgWidth - 200)
+		.attr("dy", svgHeight/4)
+		.attr("font-size","4vh")
+		.attr("fill","red")
+		.text("HUNGARY");
+
+		circles
+		.append("text")
+		.attr("dx", svgWidth/2 + 200)
+		.attr("dy", 5*svgHeight/6)
+		.attr("font-size","4vh")
+		.attr("fill","red")
+		.text("CROATIA");
 	console.log("we'll done with plotting circles");
 	});
 	console.log("this is the end of the valuesJSON function");
@@ -275,12 +311,12 @@ d3.json("updatedValuesGeocode.json", function(data) {
 
 /*---------------------------------SIZE CHANGE FUNCTION--------------------------*/
 function sizeChange(){
-	console.log("the size is changing ");
+	//console.log("the size is changing ");
 
 	updateWidth = w.innerWidth || e.clientWidth || g.clientWidth;
     updateHeight = w.innerHeight|| e.clientHeight|| g.clientHeight;
 
-    console.log(updateWidth + " " + updateHeight);
+    //console.log(updateWidth + " " + updateHeight);
 
     
     if(updateWidth < updateHeight){
@@ -305,8 +341,8 @@ function sizeChange(){
 
 
 function numRefInfo(dataObj){
-	console.log(dataObj.numRefugees);
-	console.log("There are currently " + dataObj.numRefugees[valueSlider] + " refugees in this center");		
+	//console.log(dataObj.numRefugees);
+	//console.log("There are currently " + dataObj.numRefugees[valueSlider] + " refugees in this center");		
 	$("#textbox").html(' ');
 	d3.select("#textbox")
 	.append("p")
@@ -319,23 +355,18 @@ function updateData(){
     //display the dates depending on the value of the slider
     $("#dateDisplay").html(dateArray[updateCount]);           	
     // update the radius range
-    d3.json("updatedValuesGeocode.json", function(error, data) {
-      rScale.domain([
-		    d3.min(data, function(d){ return d.numRefugees[updateCount]}),
-				d3.max(data, function(d){ return d.numRefugees[updateCount]})
-				]);
-
-    // vrhnika transition
-    vrhnikaData = data[4].numRefugees[updateCount];
-    //console.log(vrhnikaData);
-    if(vrhnikaData!==0){
-    	updateTransition();
-    };
+    d3.json("data/updatedValuesGeocode.json", function(error, data) {
+      //rescale the circles? is that a good idea? - no, because you lose comparison over time
+    rScale.domain([
+		d3.min(data, function(d){ return d.numRefugees[updateCount]}),
+		d3.max(data, function(d){ return d.numRefugees[updateCount]})
+	]);
+ 
     // Make the changes to the svg
-      svg.selectAll("circle")
+    svg.selectAll("circle")
         .data(data)
         .transition()
-        .duration(500)
+        .duration(1000)
         .ease("in-out")
         //update radii
         .attr("r", function(d) {
@@ -347,10 +378,28 @@ function updateData(){
 				return 0
 			}
 		});
+
+	/*------------------------------*/
+    var minusOne = pathCounter - 1;
+    var minusTwo =  pathCounter - 2;//from right to left
+
+    routeTrans
+    .transition()
+    .duration(1000)
+    .each(function(d) { d.totalLength = this.getTotalLength(); })
+    .attr("stroke-dashoffset", function(d) { return d.totalLength + minusOne*d.totalLength; })
+    .transition()
+    .duration(1000)
+    .attr("stroke-dashoffset", function(d) { return d.totalLength + minusTwo*d.totalLength; })
+
+
+    pathCounter = minusTwo;
+
 	});
  }
 
-updateData();
+//going once - calling itself
+//updateData();
 
 /*-------------------AUTOPLAY-------------------*/
 /*----------------------------------------------*/
@@ -358,7 +407,7 @@ updateData();
   var playing = false,
       loop    = null;
        
-      d3.select("#autoplay").on("click", function() {
+      d3.select("#autoPlayButton").on("click", function() {
       	var theDate = $("#slider").slider('value');
 
       	updateCount = theDate;
@@ -381,8 +430,8 @@ updateData();
           		else if (updateCount = dateArrayLength -1){
           		updateCount = 0;
           		}
-          },1200 );
-          return d3.select(d3.event.target).text("Stop Autoplay");
+          },3000 );
+          return d3.select(d3.event.target).text("Stop autoplay");
           }
         
       });
@@ -425,11 +474,6 @@ $(document).ready(function(){
 		console.log("clicked call to action");
 		callServer();
 	});
-
-	/*$('#transition').click(function(){
-		console.log("transition");
-		updateTransition();
-	});*/
 })
 
 
