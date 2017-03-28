@@ -1,4 +1,4 @@
-var centerX =14.70,
+var centerX =14.50,
 	centerY = 46.1;
 
 
@@ -259,7 +259,7 @@ d3.json("data/updatedValuesGeocode.json", function(data) {
 		console.log("yes, we've registered a successful click");
 		numRefInfo(d)})
 //onMouseover
-	.on("mouseover", function(d){
+	/*.on("mouseover", function(d){
 		d3.select(this)
 		.attr("stroke", "purple")
 		.attr("stroke-width","4")
@@ -279,22 +279,22 @@ d3.json("data/updatedValuesGeocode.json", function(data) {
 		.classed("pointerActive", false);
 //hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
-		});
+		});*/
 
 		circles
 		.append("text")
 		.attr("dx", svgWidth/2 - 100)
 		.attr("dy", svgHeight/6)
 		.attr("font-size","4vh")
-		.attr("fill","red")
+		.attr("fill","white")
 		.text("AUSTRIA");
 
 		circles
 		.append("text")
-		.attr("dx", svgWidth - 200)
-		.attr("dy", svgHeight/4)
+		.attr("dx", svgWidth - 180)
+		.attr("dy", svgHeight/5)
 		.attr("font-size","4vh")
-		.attr("fill","red")
+		.attr("fill","white")
 		.text("HUNGARY");
 
 		circles
@@ -302,7 +302,7 @@ d3.json("data/updatedValuesGeocode.json", function(data) {
 		.attr("dx", svgWidth/2 + 200)
 		.attr("dy", 5*svgHeight/6)
 		.attr("font-size","4vh")
-		.attr("fill","red")
+		.attr("fill","white")
 		.text("CROATIA");
 	console.log("we'll done with plotting circles");
 	});
