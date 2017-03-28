@@ -464,6 +464,11 @@ function callServer(){
 
 $(document).ready(function(){
 	console.log("I'm ready show me what you got!");
+
+	$width = $(window).width();
+	if($width < 600){
+		$('.mobile-warning').removeClass('hide');
+	}
 	//newLineJSON();
 	sloMap();
 	$('#autoplay').click(function(){
