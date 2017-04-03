@@ -28,36 +28,12 @@ app.get("/", function(req, res){
 });
 
 app.get("/index", function(req, res){
-	res.render('index'); //, dataForThePage
+	res.render('index');
 });
-
-//Main Page Route - WITH data requested via the client
-app.get("/buttonPress", function(req, res){
-	res.render('gallery'); // , dataForThePage
-});
-
+//about page
 app.get("/aboutPress", function(req, res){
-	res.render('about'); // , dataForThePage
+	res.render('about');
 });
-
-//JSON Serving route - request to wikipedia
-/*app.get("/api/:word", function(req, res){
-	//CORS enable this route - http://enable-cors.org/server.html
-	//anybody can get data from anybody
-	res.header('Access-Control-Allow-Origin', "*");
-	var currentWord = req.params.word;
-	var requestURL = "http://en.wikipedia.org/w/api.php?action=opensearch&format=json&search=" + currentWord;
-	Request(requestURL, function (error, response, body) {
-		if (!error && response.statusCode == 200) {
-			//console.log(body);
-			var theData = JSON.parse(body);
-			//console.log(theData);
-			// we send the data here
-			res.json(theData);
-		}
-	});
-});*/
-
 //Catch All Route
 app.get("*", function(req, res){
 	res.send('Sorry, nothing doing here.');
