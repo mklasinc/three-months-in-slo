@@ -11,7 +11,7 @@ var vrhnikaData;
 var transitionRoutes = false;
 
 /*------------------used in SLIDER JS------------------*/
-var dateArray = ["21 Oct 06:00 GMT+1", "21 Oct 11:00 GMT+1", 
+var dateArray = ["21 Oct 06:00 GMT+1", "21 Oct 11:00 GMT+1",
 "22 Oct 06:00 GMT+1", "22 Oct 12:00 GMT+1", "22 Oct 18:00 GMT+1",
 "23 Oct 08:00 GMT+1", "23 Oct 12:00 GMT+1", "23 Oct 17:00 GMT+1",
 "24 Oct 06:00 GMT+1", "24 Oct 12:00 GMT+1", "24 Oct 18:00 GMT+1",
@@ -130,7 +130,7 @@ function sloMap(){
     	})
 		linesJSON();
 	});
-	
+
 };
 
 /*------------------------HIGHWAY - GROUP 2 -----------------------------------*/
@@ -169,7 +169,7 @@ function linesJSON(){
     totalLength = route.node().getTotalLength();
     reverseTotalLength = -totalLength;*/
 
-    
+
     routeTrans
 	.each(function(d) { d.totalLength = this.getTotalLength(); })
     .attr("stroke-dasharray", function(d) { return d.totalLength + " " + d.totalLength; })
@@ -259,7 +259,7 @@ d3.json("data/updatedValuesGeocode.json", function(data) {
 		console.log("yes, we've registered a successful click");
 		numRefInfo(d)})
 //onMouseover
-	/*.on("mouseover", function(d){
+	.on("mouseover", function(d){
 		d3.select(this)
 		.attr("stroke", "purple")
 		.attr("stroke-width","4")
@@ -279,7 +279,7 @@ d3.json("data/updatedValuesGeocode.json", function(data) {
 		.classed("pointerActive", false);
 //hide the tooltip
 		d3.select("#tooltip").classed("hidden", true);
-		});*/
+		});
 
 		circles
 		.append("text")
@@ -318,7 +318,7 @@ function sizeChange(){
 
     //console.log(updateWidth + " " + updateHeight);
 
-    
+
     if(updateWidth < updateHeight){
 	updateWidthNew = updateWidth* 0.96;
 	updateHeightNew = updateWidthNew;
@@ -342,7 +342,7 @@ function sizeChange(){
 
 function numRefInfo(dataObj){
 	//console.log(dataObj.numRefugees);
-	//console.log("There are currently " + dataObj.numRefugees[valueSlider] + " refugees in this center");		
+	//console.log("There are currently " + dataObj.numRefugees[valueSlider] + " refugees in this center");
 	$("#textbox").html(' ');
 	d3.select("#textbox")
 	.append("p")
@@ -351,9 +351,9 @@ function numRefInfo(dataObj){
 
 
 
-function updateData(){	
+function updateData(){
     //display the dates depending on the value of the slider
-    $("#dateDisplay").html(dateArray[updateCount]);           	
+    $("#dateDisplay").html(dateArray[updateCount]);
     // update the radius range
     d3.json("data/updatedValuesGeocode.json", function(error, data) {
       //rescale the circles? is that a good idea? - no, because you lose comparison over time
@@ -361,7 +361,7 @@ function updateData(){
 		d3.min(data, function(d){ return d.numRefugees[updateCount]}),
 		d3.max(data, function(d){ return d.numRefugees[updateCount]})
 	]);
- 
+
     // Make the changes to the svg
     svg.selectAll("circle")
         .data(data)
@@ -387,7 +387,9 @@ function updateData(){
     .transition()
     .duration(1000)
     .each(function(d) { d.totalLength = this.getTotalLength(); })
-    .attr("stroke-dashoffset", function(d) { return d.totalLength + minusOne*d.totalLength; })
+    .attr("stroke-dashoffset", function(d) {
+			console.log(d);
+			return d.totalLength + minusOne*d.totalLength; })
     .transition()
     .duration(1000)
     .attr("stroke-dashoffset", function(d) { return d.totalLength + minusTwo*d.totalLength; })
@@ -406,7 +408,7 @@ function updateData(){
 
   var playing = false,
       loop    = null;
-       
+
       d3.select("#autoPlayButton").on("click", function() {
       	var theDate = $("#slider").slider('value');
 
@@ -419,7 +421,7 @@ function updateData(){
           return d3.select(d3.event.target).text("Autoplay");
         } else {
           playing = true;
-          loop    = setInterval(function() { 
+          loop    = setInterval(function() {
           		updateCount += 1;
 
           		if(updateCount < dateArrayLength - 1){
@@ -433,7 +435,7 @@ function updateData(){
           },3000 );
           return d3.select(d3.event.target).text("Stop autoplay");
           }
-        
+
       });
 
 // For the Set clickable values, we use variable theValue to supply value.
@@ -480,5 +482,3 @@ $(document).ready(function(){
 		callServer();
 	});
 })
-
-
